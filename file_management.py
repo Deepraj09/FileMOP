@@ -4,15 +4,14 @@ import hashlib
 import time
 import csv
 import smtplib
+import argparse
 from email.message import EmailMessage
 from datetime import datetime
 from PyPDF2 import PdfReader
 from PIL import Image
-import schedule
 
-# Global log file and target directory
+# Global log file
 LOG_FILE = "file_management_log.csv"
-TARGET_DIRECTORY = "D:\Final year\FinalProject\Test"  # Replace with your directory path
 
 # Email configuration
 EMAIL_ADDRESS = "test1python21@gmail.com"  # Replace with your email address
@@ -126,34 +125,31 @@ def organize_files_by_extension(path):
                     os.makedirs(folder_path)
                 shutil.move(file_path, folder_path)
                 log_action("Moved", file_ext[1:], file_path)
+                # os.remove(file_path)
 
 
-def automate_file_management():
-    print("Starting automated file management...")
-    delete_duplicates(TARGET_DIRECTORY)
-    delete_empty_files(TARGET_DIRECTORY)
-    delete_corrupted_files(TARGET_DIRECTORY)
-    organize_files_by_extension(TARGET_DIRECTORY)
+def automate_file_management(target_directory):
+    print(f"Starting automated file management on: {target_directory}")
+    delete_duplicates(target_directory)
+    delete_empty_files(target_directory)
+    delete_corrupted_files(target_directory)
+    organize_files_by_extension(target_directory)
+    # malicious()
     print("File management tasks completed.")
 
 
-# Schedule weekly email
-schedule.every().monday.at("21:19").do(send_email_with_log)
-
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Automated File Management System")
+    parser.add_argument("--target", type=str, required=True, help="Target directory to manage files in")
+    args = parser.parse_args()
+
+    target_directory = args.target
+
+    if not os.path.exists(target_directory):
+        print(f"Error: The directory {target_directory} does not exist.")
+        exit(1)
+
     initialize_log_file()
-
-    # Background scheduler for email
-    import threading
-    def run_schedule():
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
-
-    scheduler_thread = threading.Thread(target=run_schedule, daemon=True)
-    scheduler_thread.start()
-
-    # Continuous file management automation
-    while True:
-        automate_file_management()
-        time.sleep(3600)  # Run every hour
+    automate_file_management(target_directory)
+    send_email_with_log()
+    print("All tasks completed. Exiting program.")
