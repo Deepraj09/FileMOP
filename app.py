@@ -94,7 +94,7 @@ def run_file_management_script():
 
 def main():
     st.title("🗂️ FileMOP")
-    st.subheader("File Management & Organization Platform")
+    st.subheader("File Management, Optimization & Protection")
     
     # Ensure upload folder exists
 
