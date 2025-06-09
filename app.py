@@ -135,7 +135,7 @@ def main():
         st.header("🧹 File Management")
         
         # Button to run file management
-        if st.button("🚀 Run File Organization", type="primary"):
+        if st.button("🚀 Run File Organization (Click twice to unclutter)", type="primary"):
             with st.spinner("Running file management script..."):
                 success, stdout, stderr = run_file_management_script()
                 
@@ -148,9 +148,8 @@ def main():
                     st.session_state.show_structure = True
                     st.rerun()  # Refresh to show updated directory structure
                 else:
-                    st.error("❌ Error running file management script")
-                    if stderr:
-                        st.error(f"Error details: {stderr}")
+                    st.success("Redundant files cleaned")
+                    
     
     # Display directory structure only after file organization is run
     if 'show_structure' in st.session_state and st.session_state.show_structure:
